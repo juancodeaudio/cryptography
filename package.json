@@ -4,13 +4,15 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cli": "ts-node src/index.ts"
   },
   "keywords": [],
   "author": "Juan Alvarado V <alvaradovallejo.juan@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/yargs": "^17.0.32",
+    "@types/node": "^20.12.2",
+    "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
   },
   "dependencies": {
