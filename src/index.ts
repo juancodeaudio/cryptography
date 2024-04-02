@@ -22,11 +22,11 @@ const { argv } = yargs
       },
       min: {
         type: 'number',
-        default: 100
+        default: 0
       },
       max: {
         type: 'number',
-        default: 0
+        default: 100
       },
       encoding: {
         alias: 'enc',
