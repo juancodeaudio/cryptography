@@ -1,5 +1,7 @@
 import yargs from "yargs";
 import prng from "./prng";
+import cipher from "./cipher";
+import decipher from "./decipher";
 
 const { argv } = yargs
   .options({})
@@ -45,6 +47,76 @@ const { argv } = yargs
           "hex"
         ] as const,
         default: "hex"
+      },
+    },
+  })
+  .command({
+    command: 'cipher',
+    describe: 'Encrypt a message',
+    handler: ({ password, salt, size, input, output }) => {
+      cipher(password, salt, size, input, output);
+    },
+    builder: {
+      password: {
+        alias: "p",
+        description: "The password to encrypt the file with",
+        type: "string",
+      },
+      salt: {
+        description: "The salt to encrypt the file with",
+        type: "string",
+      },
+      size: {
+        choices: [128, 192, 256] as const,
+        description: "The size of the key",
+        default: 128,
+      },
+      input: {
+        alias: "i",
+        description: "The file to encrypt",
+        type: "string",
+        demandOption: true,
+      },
+      output: {
+        alias: "o",
+        description: "The file to output the encrypted data to",
+        type: "string",
+        demandOption: true,
+      },
+    },
+  })
+  .command({
+    command: "decipher",
+    describe: "Decrypt a file",
+    handler: ({ password, salt, size, input, output }) => {
+      decipher(password, salt, size, input, output);
+    },
+    builder: {
+      password: {
+        alias: "p",
+        description: "The password to decrypt the file with",
+        type: "string",
+      },
+      salt: {
+        description: "The salt to decrypt the file with",
+        type: "string",
+      },
+      size: {
+        choices: [128, 192, 256] as const,
+        description: "The size of the key",
+        default: 128,
+      },
+      input: {
+        alias: "i",
+        description: "The file to encrypt",
+        type: "string",
+        demandOption: true,
+      },
+      output: {
+        alias: "o",
+        description: "The file to output the encrypted data to",
+        type: "string",
+        demandOption: true,
       },
     },
   })
