@@ -2,6 +2,39 @@ import yargs from "yargs";
 import prng from "./prng";
 import cipher from "./cipher";
 import decipher from "./decipher";
+import hash from "./hash";
+import hmac from "./hmac";
+
+const encoding = {
+  alias: "enc",
+  choices: [
+    "ascii",
+    "utf8",
+    "utf-8",
+    "utf16le",
+    "utf-16le",
+    "ucs2",
+    "ucs-2",
+    "base64",
+    "base64url",
+    "latin1",
+    "binary",
+    "hex",
+  ] as const,
+  default: "hex",
+} as const;
+
+const input = {
+  alias: "i",
+  type: "string",
+  demandOption: true,
+} as const;
+
+const output = {
+  alias: "o",
+  type: "string",
+  demandOption: true,
+} as const;
 
 const { argv } = yargs
   .options({})
@@ -30,24 +63,7 @@ const { argv } = yargs
         type: 'number',
         default: 100
       },
-      encoding: {
-        alias: 'enc',
-        choices: [
-          "ascii",
-          "utf8",
-          "utf-8",
-          "utf16le",
-          "utf16-le",
-          "ucs2",
-          "ucs-2",
-          "base64",
-          "base64url",
-          "latin1",
-          "binary",
-          "hex"
-        ] as const,
-        default: "hex"
-      },
+      encoding,
     },
   })
   .command({
@@ -72,16 +88,12 @@ const { argv } = yargs
         default: 128,
       },
       input: {
-        alias: "i",
+        ...input,
         description: "The file to encrypt",
-        type: "string",
-        demandOption: true,
       },
       output: {
-        alias: "o",
-        description: "The file to output the encrypted data to",
-        type: "string",
-        demandOption: true,
+        ...output,
+        description: "The file to output the encrypted file to",
       },
     },
   })
@@ -107,17 +119,60 @@ const { argv } = yargs
         default: 128,
       },
       input: {
-        alias: "i",
+        ...input,
         description: "The file to encrypt",
-        type: "string",
-        demandOption: true,
       },
       output: {
-        alias: "o",
-        description: "The file to output the encrypted data to",
+        ...output,
+        description: "The file to output the encrypted file to",
+      },
+    },
+  })
+  .command({
+    command: "hash",
+    describe: "Hash a file",
+    handler: ({ algorithm, encoding, input }) => {
+      console.log(hash(algorithm, encoding, input));
+    },
+    builder: {
+      algorithm: {
+        alias: "a",
+        description: "The algorithm to use",
+        type: "string",
+        demandOption: true,
+        default: "sha256",
+      },
+      input: {
+        ...input,
+        description: "The file to hash",
+      },
+      encoding,
+    },
+  })
+  .command({
+    command: "hmac",
+    describe: "Generate an HMAC for a file",
+    handler: ({ algorithm, key, encoding, input }) => {
+      console.log(hmac(algorithm, key, encoding, input));
+    },
+    builder: {
+      algorithm: {
+        alias: "a",
+        description: "The algorithm to use",
+        type: "string",
+        default: "sha256",
+      },
+      input: {
+        ...input,
+        description: "The file to hmac",
+      },
+      key: {
+        alias: "k",
+        description: "The key to use",
         type: "string",
         demandOption: true,
       },
+      encoding,
     },
   })
   .demandCommand(1, "You need at least one command before moving on")
